@@ -13,12 +13,12 @@ namespace AriUtils
     public static class TemplateCreator
     {
         #region CONSTS
-        private const string MONOBEHAVIOUR_PATH = "Assets/Scripts/AriUtils/Templates/Editor/TemplateFiles/MonoBehaviour.cs.txt";
-        private const string SCRIPTABLEOBJECT_PATH = "Assets/Scripts/AriUtils/Templates/Editor/TemplateFiles/ScriptableObject.cs.txt";
-        private const string ENUM_PATH = "Assets/Scripts/AriUtils/Templates/Editor/TemplateFiles/Enum.cs.txt";
-        private const string RAWCLASS_PATH = "Assets/Scripts/AriUtils/Templates/Editor/TemplateFiles/RawC#Class.cs.txt";
-        private const string CUSTOMEDITOR_PATH = "Assets/Scripts/AriUtils/Templates/Editor/TemplateFiles/CustomEditor.cs.txt";
-        private const string INTERFACE_PATH = "Assets/Scripts/AriUtils/Templates/Editor/TemplateFiles/Interface.cs.txt";
+        private const string MONOBEHAVIOUR_PATH = "Assets/Scripts/AriUtils/Editor/Templates/MonoBehaviour.cs.txt";
+        private const string SCRIPTABLEOBJECT_PATH = "Assets/Scripts/AriUtils/Editor/Templates/ScriptableObject.cs.txt";
+        private const string ENUM_PATH = "Assets/Scripts/AriUtils/Editor/Templates/Enum.cs.txt";
+        private const string RAWCLASS_PATH = "Assets/Scripts/AriUtils/Editor/Templates/RawC#Class.cs.txt";
+        private const string CUSTOMEDITOR_PATH = "Assets/Scripts/AriUtils/Editor/Templates/CustomEditor.cs.txt";
+        private const string INTERFACE_PATH = "Assets/Scripts/AriUtils/Editor/Templates/Interface.cs.txt";
         #endregion
 
         /// <summary>
