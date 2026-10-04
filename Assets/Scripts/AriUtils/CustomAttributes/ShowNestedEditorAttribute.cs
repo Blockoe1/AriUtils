@@ -12,6 +12,7 @@ using UnityEngine;
 namespace AriUtils
 {
     [AttributeUsage(AttributeTargets.Field)]
+    [Obsolete("ShowNestedEditor is obsolete.  Use NaughtyAttributes.Expandable instead.")]
     public class ShowNestedEditorAttribute : PropertyAttribute
     {
         
