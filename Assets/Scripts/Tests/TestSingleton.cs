@@ -2,22 +2,11 @@ using UnityEngine;
 
 namespace AriUtils
 {
-    public class TestSingleton : MonoBehaviour
+    public class TestSingleton : MonoBehaviour, ISingleton
     {
-        private static TestSingleton instance;
-
-        private void Awake()
+        public void SingletonInitialize()
         {
-            if (instance != null && instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            else
-            {
-                instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
+            Debug.Log("Singleton Initialized!");
         }
     }
 }
