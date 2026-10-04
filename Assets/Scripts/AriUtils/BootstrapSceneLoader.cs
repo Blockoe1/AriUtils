@@ -6,6 +6,7 @@
 //
 // Brief Description : Automatically loads a scene called "BootstrapScene" when the project starts.
 *****************************************************************************/
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,10 +19,26 @@ namespace AriUtils
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void LoadBootstrapScene()
         {
-            if (SceneManager.GetSceneByName(BOOTSTRAP_SCENE_NAME).IsValid())
+            if (CheckIfSceneExists(BOOTSTRAP_SCENE_NAME))
             {
                 SceneManager.LoadScene(BOOTSTRAP_SCENE_NAME, LoadSceneMode.Additive);
             }
+        }
+
+        private static bool CheckIfSceneExists(string sceneName)
+        {
+            // Loop through all scenes in the Build ScenesList and check their path.
+            // If the file with a given name exists, then return true.
+            for(int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+            {
+                string path = SceneUtility.GetScenePathByBuildIndex(i);
+                string name = Path.GetFileNameWithoutExtension(path);
+                if (sceneName == name)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
