@@ -9,7 +9,6 @@
 *****************************************************************************/
 using System;
 using UnityEditor;
-using UnityEditor.Animations;
 using UnityEngine;
 
 namespace AriUtils
