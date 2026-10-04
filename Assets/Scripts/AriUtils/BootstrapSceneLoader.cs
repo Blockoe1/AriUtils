@@ -18,7 +18,10 @@ namespace AriUtils
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void LoadBootstrapScene()
         {
-            SceneManager.LoadScene(BOOTSTRAP_SCENE_NAME, LoadSceneMode.Additive);
+            if (SceneManager.GetSceneByName(BOOTSTRAP_SCENE_NAME).IsValid())
+            {
+                SceneManager.LoadScene(BOOTSTRAP_SCENE_NAME, LoadSceneMode.Additive);
+            }
         }
     }
 }

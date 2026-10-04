@@ -12,6 +12,7 @@ using System;
 
 namespace AriUtils.Editor
 {
+    [Obsolete("ShowNestedEditor is obsolte.")]
     [CustomPropertyDrawer(typeof(ShowNestedEditorAttribute))]
     public class ShowNestedEditorDrawer : PropertyDrawer
     {
