@@ -14,16 +14,10 @@ namespace AriUtils
     [AttributeUsage(AttributeTargets.Field)]
     public class ClassDropdownAttribute : PropertyAttribute
     {
-        public Type BaseType { get; set; }
         public bool RestrictAssemblies { get; set; }
         
-        public ClassDropdownAttribute(Type baseType) : this(baseType, true)
+        public ClassDropdownAttribute(bool restrictAssemblies = true)
         {
-        }
-        
-        public ClassDropdownAttribute(Type baseType, bool restrictAssemblies)
-        {
-            BaseType = baseType;
             RestrictAssemblies = restrictAssemblies;
         }
     }

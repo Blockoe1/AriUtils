@@ -10,7 +10,7 @@ using UnityEditor;
 
     #ROOTNAMESPACEBEGIN#
 [CustomEditor(typeof(YourComponentType))]
-public class #SCRIPTNAME# : Editor
+public class #SCRIPTNAME# : UnityEditor.Editor
 {
     
     // SerializedProperty variables.

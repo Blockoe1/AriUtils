@@ -5,7 +5,8 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Rigidbody2D))]
 public class ScriptTester : MonoBehaviour
 {
-    [SerializeReference, ClassDropdown(typeof(ITestInterface))] private ITestInterface testReference;
+    [SerializeField] private SerializedInterface<ITestInterface> testReference;
+    [SerializeReference, ClassDropdown] private TestInterfaceClass testDropdown;
     [SerializeField, ComponentReference] private Rigidbody2D body;
     [SerializeField] private SceneField scene;
 
@@ -13,5 +14,10 @@ public class ScriptTester : MonoBehaviour
     public void ReloadScene()
     {
         SceneManager.LoadScene(scene);
+    }
+
+    private void Start()
+    {
+        testReference.Interface.TestFunction();
     }
 }

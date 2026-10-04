@@ -393,6 +393,7 @@ GameObject:
   m_Component:
   - component: {fileID: 686697059}
   - component: {fileID: 686697058}
+  - component: {fileID: 686697061}
   - component: {fileID: 686697060}
   m_Layer: 0
   m_Name: GameObject
@@ -414,7 +415,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InterfaceSerializationTester
   testReference:
-    rid: -2
+    _managedReferenceValue:
+      rid: 6683399129592496324
+    _objectReferenceValue: {fileID: 686697061}
+    _referenceType: 1
+  testDropdown:
+    rid: 6683399129592496313
   body: {fileID: 686697060}
   scene:
     _sceneName: SampleScene
@@ -422,8 +428,14 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 6683399129592496313
+      type: {class: TestInterfaceClass, ns: , asm: Assembly-CSharp}
+      data:
+        param: 0
+    - rid: 6683399129592496324
+      type: {class: TestInterfaceClass, ns: , asm: Assembly-CSharp}
+      data:
+        param: 0
 --- !u!4 &686697059
 Transform:
   m_ObjectHideFlags: 0
@@ -466,6 +478,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &686697061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 686697057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ba80d841f6a65241acf2a98dac1e8f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AriUtils.TestMonoBehaviour
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
