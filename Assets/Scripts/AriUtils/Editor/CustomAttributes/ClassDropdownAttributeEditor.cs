@@ -9,7 +9,6 @@
 *****************************************************************************/
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -80,7 +79,7 @@ namespace AriUtils.Editor
                         yOffset += childHeight + EditorGUIUtility.standardVerticalSpacing;
                     }
 
-                    LoopForProperties(DrawProperty, property);
+                    EditorUtils.LoopForProperties(DrawProperty, property);
 
                     EditorGUI.indentLevel--;
                 }
@@ -105,40 +104,9 @@ namespace AriUtils.Editor
                     height += EditorGUI.GetPropertyHeight(ppt, true) + EditorGUIUtility.standardVerticalSpacing;
                 }
 
-                LoopForProperties(IncreaseHeight, property);
+                EditorUtils.LoopForProperties(IncreaseHeight, property);
             }
             return height;
-        }
-
-        /// <summary>
-        /// Loops through the child properties in a given SerializedProperty and calls a propertyFunc on 
-        /// copies of the property.
-        /// </summary>
-        /// <param name="propertyFunc">The function to call on copies of the base property's children.</param>
-        /// <param name="baseProperty">The base property to run the function on the children of.</param>
-        private void LoopForProperties(Action<SerializedProperty> propertyFunc, SerializedProperty baseProperty)
-        {
-            // Not sure why we need to copy the property.
-            SerializedProperty copy = baseProperty.Copy();
-            SerializedProperty end = copy.GetEndProperty();
-
-            // Tracks if the loop should enter child properties. Only need to enter children the first loop, as
-            // further children will be drawn automatically.
-            bool enterChildren = true;
-            // Loop over all the properties in the copy until we hit the end property.
-            while (copy.NextVisible(enterChildren) && !SerializedProperty.EqualContents(copy, end))
-            {
-                //Skip the default m_Script property
-                if (copy.name.Equals("m_Script", StringComparison.Ordinal))
-                {
-                    enterChildren = false;
-                    continue;
-                }
-
-                propertyFunc(copy);
-
-                enterChildren = false;
-            }
         }
 
         /// <summary>
@@ -151,7 +119,7 @@ namespace AriUtils.Editor
         private void Initialize(SerializedProperty property)
         {
             ClassDropdownAttribute dda = (attribute as ClassDropdownAttribute);
-            Type baseType = dda?.BaseType;
+            Type baseType = fieldInfo.FieldType;
 
             // Create a temp list to add selection options to.
             List<string> tempSelections = new List<string>();
