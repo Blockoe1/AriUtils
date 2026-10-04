@@ -19,5 +19,7 @@ public class ScriptTester : MonoBehaviour
     private void Start()
     {
         testReference.Interface.TestFunction();
+
+        Debug.Log("Singleton: " + SingletonManager.GetSingleton<TestSingleton>());
     }
 }
