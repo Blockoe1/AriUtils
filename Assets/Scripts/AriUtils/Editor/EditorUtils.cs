@@ -27,6 +27,29 @@ namespace AriUtils.Editor
 
 
         /// <summary>
+        /// Specifies the total height taken up by this property.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public static float GetDynamicPropertyHeight(SerializedProperty property)
+        {
+            float height = EditorGUIUtility.singleLineHeight;
+
+            // If we have a class selected, then loop through all of it's properties and add their heights to the total.
+            if (property.managedReferenceValue != null && property.isExpanded)
+            {
+                void IncreaseHeight(SerializedProperty ppt)
+                {
+                    height += EditorGUI.GetPropertyHeight(ppt, true) + EditorGUIUtility.standardVerticalSpacing;
+                }
+
+                LoopForProperties(IncreaseHeight, property);
+            }
+            return height;
+        }
+
+        /// <summary>
         /// Loops through the child properties in a given SerializedProperty and calls a propertyFunc on 
         /// copies of the property.
         /// </summary>

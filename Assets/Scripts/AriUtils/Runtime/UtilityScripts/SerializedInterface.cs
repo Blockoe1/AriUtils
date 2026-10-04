@@ -7,7 +7,6 @@
 // Brief Description : Generic class that allows for "serialization" of an object with a given interface.
 *****************************************************************************/
 using System;
-using UnityEditor.Compilation;
 using UnityEngine;
 
 namespace AriUtils

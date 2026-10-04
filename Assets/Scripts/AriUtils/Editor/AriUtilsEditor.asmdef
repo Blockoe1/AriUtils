@@ -1,6 +1,6 @@
 {
     "name": "AriUtilsEditor",
-    "rootNamespace": "",
+    "rootNamespace": "AriUtils.Editor",
     "references": [
         "GUID:6cf5582e55382cd4297f88c18a2d4a56"
     ],

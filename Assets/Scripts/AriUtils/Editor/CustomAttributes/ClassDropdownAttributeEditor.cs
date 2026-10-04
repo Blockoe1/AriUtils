@@ -8,21 +8,15 @@
 // Based on an article at: https://medium.com/@modyari/unity-workflow-customization-robust-custom-dropdowns-to-unlock-manageable-architecture-f16c183b993a 
 *****************************************************************************/
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assemblies;
 
 namespace AriUtils.Editor
 {
     [CustomPropertyDrawer(typeof(ClassDropdownAttribute))]
     public class ClassDropdownAttributeDrawer : PropertyDrawer
     {
-        private bool isInitialized;
-        private int selectionIndex;
-        private string[] selectionOptions;
-        private List<Type> selectionTypes;
+        private EditorClassDropdown editorDropdown;
 
         /// <summary>
         /// Draws the class dropdown and relevant properties, if any.
@@ -33,57 +27,19 @@ namespace AriUtils.Editor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // Perform initialization if we haven't already.
-            if (!isInitialized)
+            if (editorDropdown == null)
             {
-                Initialize(property);
-            }
-
-            UpdateSelectionIndex(property);
-
-            // Draw the dropdown
-            Rect dropdownRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
-            EditorGUI.BeginChangeCheck();
-            selectionIndex = EditorGUI.Popup(dropdownRect, property.displayName, selectionIndex, selectionOptions);
-            // If the user made a change to the popup selection:
-            if (EditorGUI.EndChangeCheck())
-            {
-                // Creates an instance of the type the user selected and assign it to the property value.
-                SetPropertyValue(property, selectionIndex);
-            }
-
-            // Draw the subclass serialized fields.
-            
-            if (property.managedReferenceValue != null)
-            {
-                if (property.hasVisibleChildren)
+                ClassDropdownAttribute dda = (attribute as ClassDropdownAttribute);
+                Type baseType = fieldInfo.FieldType;
+                bool ClassFilter(Type type)
                 {
-                    property.isExpanded = EditorGUI.Foldout(dropdownRect, property.isExpanded, "");
+                    return EditorUtils.IsClassOrSubclass(baseType, type);
                 }
-                
-                if (property.isExpanded)
-                {
-                    EditorGUI.indentLevel++;
 
-                    // Calculate the starting y position for the child fields.
-                    float yOffset = position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                editorDropdown = new EditorClassDropdown(ClassFilter, property, dda.RestrictAssemblies ? baseType : null);
+           }
 
-                    void DrawProperty(SerializedProperty property)
-                    {
-                        float childHeight = EditorGUI.GetPropertyHeight(property, true);
-                        Rect childRect = new Rect(position.x, yOffset, position.width, childHeight);
-
-                        // Draw the child property field.
-                        EditorGUI.PropertyField(childRect, property, true);
-
-                        // Move to the next property.
-                        yOffset += childHeight + EditorGUIUtility.standardVerticalSpacing;
-                    }
-
-                    EditorUtils.LoopForProperties(DrawProperty, property);
-
-                    EditorGUI.indentLevel--;
-                }
-            }
+            editorDropdown.DrawDropdown(position, position, property, property.displayName);
         }
 
         /// <summary>
@@ -94,160 +50,42 @@ namespace AriUtils.Editor
         /// <returns></returns>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            float height = EditorGUIUtility.singleLineHeight;
-
-            // If we have a class selected, then loop through all of it's properties and add their heights to the total.
-            if (property.managedReferenceValue != null && property.isExpanded)
-            {
-                void IncreaseHeight(SerializedProperty ppt)
-                {
-                    height += EditorGUI.GetPropertyHeight(ppt, true) + EditorGUIUtility.standardVerticalSpacing;
-                }
-
-                EditorUtils.LoopForProperties(IncreaseHeight, property);
-            }
-            return height;
-        }
-
-        /// <summary>
-        /// Initializes the list of potential classes that this dropdown can hold.
-        /// </summary>
-        /// <remarks>
-        /// Done with a separate function so it only happens once and Assemblies aren;t being queried every update.
-        /// </remarks>
-        /// <param name="property">The SerializedProperty the attribute is on.</param>
-        private void Initialize(SerializedProperty property)
-        {
-            ClassDropdownAttribute dda = (attribute as ClassDropdownAttribute);
-            Type baseType = fieldInfo.FieldType;
-
-            // Create a temp list to add selection options to.
-            List<string> tempSelections = new List<string>();
-            tempSelections.Add("Null");
-
-            selectionTypes = new List<Type>();
-
-
-            if (dda.RestrictAssemblies)
-            {
-                // If RestrictAssemblies is true, only search the assembly that the base
-                // type is in.
-                AddAttributes(baseType, ref tempSelections, Assembly.GetAssembly(baseType), dda);
-            }
-            else
-            {
-                // Loop through all types in all assemblies (More generic impmenentation).
-                foreach (Assembly asmb in CurrentAssemblies.GetLoadedAssemblies())
-                {
-                    AddAttributes(baseType, ref tempSelections, asmb, dda);
-                }
-            }
-
-            // Convert the temp list into a permanent array.
-            selectionOptions = tempSelections.ToArray();
-
-            UpdateSelectionIndex(property);
-
-            isInitialized = true;
-        }
-
-        private void AddAttributes(Type baseType, ref List<string> tempSelections, Assembly assembly, ClassDropdownAttribute dda)
-        {
-            foreach (Type type in assembly.GetTypes())
-            {
-                if (!EditorUtils.IsClassOrSubclass(baseType, type) || type.IsAbstract)
-                {
-                    continue;
-                }
-
-                // Filter by allowed and excluded types.
-                //if (dda.ExcludedTypes != null)
-                //{
-                //    bool isExcluded = false;
-                //    foreach(Type et in dda.ExcludedTypes)
-                //    {
-                //        if (IsClassOrSubclass(et, type))
-                //        {
-                //            isExcluded = true;
-                //            break;
-                //        }
-                //    }
-                //    if (isExcluded)
-                //    {
-                //        continue;
-                //    }
-                //}
-                //if (dda.AllowedTypes != null)
-                //{
-                //    bool isAllowed = false;
-                //    foreach (Type at in dda.AllowedTypes)
-                //    {
-                //        if (IsClassOrSubclass(at, type))
-                //        {
-                //            isAllowed = true;
-                //            break;
-                //        }
-                //    }
-                //    if (!isAllowed)
-                //    {
-                //        continue;
-                //    }
-                //}
-
-                // Store the type and the type's name for use in the dropdown.
-                selectionTypes.Add(type);
-                string displayName = type.Name;
-
-                // Attempt to put the type into a given group in the dropdown.
-                if (Attribute.GetCustomAttribute(type, typeof(DropdownGroupAttribute)) is DropdownGroupAttribute dga)
-                {
-                    displayName = dga.GroupName + "/" + displayName;
-                }
-                tempSelections.Add(displayName);
-            }
-        }
-
-        /// <summary>
-        /// Updates the index of the selected class to match the one stored in the property.
-        /// </summary>
-        private void UpdateSelectionIndex(SerializedProperty property)
-        {
-            object currentSubclass = property.managedReferenceValue;
-
-            // If no subclass is selected, then pick the first type by default.
-            if (currentSubclass == null)
-            {
-                selectionIndex = 0;
-                //SetPropertyValue(property, selectionIndex);
-                return;
-            }
-
-            // If a subclass is selected, loop through our valid types array to find the correct index.
-            selectionIndex = selectionTypes.IndexOf(currentSubclass.GetType()) + 1;
-            // If we fail to find the correct index, then throw an error that current subclass is invalid.
-            if (selectionIndex == 0)
-            {
-                throw new ArrayTypeMismatchException("Could not find type " + currentSubclass + " in the type list.");
-            }
-        }
-
-        /// <summary>
-        /// Sets the value of the property to a given subclass instance specified by the type index.
-        /// </summary>
-        /// <param name="property">The property to set the value of.</param>
-        /// <param name="typeIndex">The index of the subclass type to set to the property.</param>
-        private void SetPropertyValue(SerializedProperty property, int typeIndex)
-        {
-            if (typeIndex == 0)
-            {
-                property.managedReferenceValue = null;
-            }
-            else
-            {
-                property.managedReferenceValue = Activator.CreateInstance(selectionTypes[typeIndex - 1]);
-            }
-                
-            property.serializedObject.ApplyModifiedProperties();
+            return EditorUtils.GetDynamicPropertyHeight(property);
         }
     }
 }
+
+
+// Filter by allowed and excluded types.
+//if (dda.ExcludedTypes != null)
+//{
+//    bool isExcluded = false;
+//    foreach(Type et in dda.ExcludedTypes)
+//    {
+//        if (IsClassOrSubclass(et, type))
+//        {
+//            isExcluded = true;
+//            break;
+//        }
+//    }
+//    if (isExcluded)
+//    {
+//        continue;
+//    }
+//}
+//if (dda.AllowedTypes != null)
+//{
+//    bool isAllowed = false;
+//    foreach (Type at in dda.AllowedTypes)
+//    {
+//        if (IsClassOrSubclass(at, type))
+//        {
+//            isAllowed = true;
+//            break;
+//        }
+//    }
+//    if (!isAllowed)
+//    {
+//        continue;
+//    }
+//}
