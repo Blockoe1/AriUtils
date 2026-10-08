@@ -416,9 +416,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InterfaceSerializationTester
   testReference:
     _managedReferenceValue:
-      rid: 6683399129592496324
-    _objectReferenceValue: {fileID: 686697061}
-    _referenceType: 1
+      rid: -2
+    _objectReferenceValue: {fileID: 0}
+    _referenceType: 0
   testDropdown:
     rid: 6683399129592496313
   body: {fileID: 686697060}
@@ -428,11 +428,9 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 6683399129592496313
-      type: {class: TestInterfaceClass, ns: , asm: Assembly-CSharp}
-      data:
-        param: 0
-    - rid: 6683399129592496324
       type: {class: TestInterfaceClass, ns: , asm: Assembly-CSharp}
       data:
         param: 0

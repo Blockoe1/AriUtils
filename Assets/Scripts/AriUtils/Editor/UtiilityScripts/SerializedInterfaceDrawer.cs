@@ -13,7 +13,7 @@ using UnityEngine;
 namespace AriUtils.Editor
 {
     [CustomPropertyDrawer(typeof(SerializedInterface<>))]
-    public class SerializeInterfaceDrawer : PropertyDrawer
+    public class SerializedInterfaceDrawer : PropertyDrawer
     {
         private EditorClassDropdown classDropdown;
 
@@ -23,6 +23,10 @@ namespace AriUtils.Editor
             EditorGUI.BeginProperty(position, label, property);
             Rect fullRect = position;
             SerializedProperty _referenceType = property.FindPropertyRelative(nameof(_referenceType));
+            SerializedProperty _objectReferenceValue = property.FindPropertyRelative(nameof(_objectReferenceValue));
+            SerializedProperty _managedReferenceValue = property.FindPropertyRelative(nameof(_managedReferenceValue));
+
+            SerializedInterface serializedInterface = property.boxedValue as SerializedInterface;
 
             position = EditorGUI.PrefixLabel(position, label);
 
@@ -37,43 +41,43 @@ namespace AriUtils.Editor
             if (_referenceType.boolValue)
             {
                 // Handle Managed Property type.
-                DrawClassDropdown(fullRect, position, property, label);
+                DrawClassDropdown(fullRect, position, _managedReferenceValue, serializedInterface.InterfaceType);
+                _objectReferenceValue.objectReferenceValue = null;
             }
             else
             {
                 // Handle Object property type.
-                DrawUnityObjectField(position, property, label);
+                DrawUnityObjectField(position, _objectReferenceValue, serializedInterface.InterfaceType);
+                _managedReferenceValue.managedReferenceValue = null;
             }
             EditorGUI.EndProperty();
         }
 
         #region Unity Object Field
-        private void DrawUnityObjectField(Rect position, SerializedProperty property, GUIContent label)
+        private void DrawUnityObjectField(Rect position, SerializedProperty objectReferenceProperty, Type interfaceType)
         {
-            SerializedInterface intFace = property.boxedValue as SerializedInterface;
-            SerializedProperty _objectReferenceValue = property.FindPropertyRelative(nameof(_objectReferenceValue));
             // Draws a UnityObject drag-and-drop reference field that accepts objects that implement the interface.
-            _objectReferenceValue.objectReferenceValue = EditorGUI.ObjectField(position, _objectReferenceValue.objectReferenceValue, intFace.InterfaceType, true);
+           objectReferenceProperty.objectReferenceValue = EditorGUI.ObjectField(position, 
+               objectReferenceProperty.objectReferenceValue, interfaceType, true);
         }
         #endregion
 
         #region ClassField
-        private void DrawClassDropdown(Rect fullRect, Rect position, SerializedProperty property, GUIContent label)
+        private void DrawClassDropdown(Rect fullRect, Rect position, SerializedProperty managedReferenceProperty, Type interfaceType)
         {
-            SerializedProperty _managedReferenceValue = property.FindPropertyRelative(nameof(_managedReferenceValue));
-            SerializedInterface intFace = property.boxedValue as SerializedInterface;
+            
             if (classDropdown == null)
             {
                 // Only include non-unity engine object classes that implement the interface.
                 bool ClassFilter(Type type)
                 {
-                    return intFace.InterfaceType.IsAssignableFrom(type) && !EditorUtils.IsClassOrSubclass(type, typeof(UnityEngine.Object));
+                    return interfaceType.IsAssignableFrom(type) && !EditorUtils.IsClassOrSubclass(type, typeof(UnityEngine.Object));
                 }
 
-                classDropdown = new EditorClassDropdown(ClassFilter, _managedReferenceValue);
+                classDropdown = new EditorClassDropdown(ClassFilter, managedReferenceProperty);
             }
 
-            classDropdown.DrawDropdown(fullRect, position, _managedReferenceValue, "");
+            classDropdown.DrawDropdown(fullRect, position, managedReferenceProperty, "");
         }
         #endregion
 
