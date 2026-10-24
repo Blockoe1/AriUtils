@@ -25,7 +25,5 @@ public class ScriptTester : MonoBehaviour
         testReference.Interface.TestFunction();
         testReference.Interface = new TestInterfaceClass();
         testReference.Interface.TestFunction();
-
-        Debug.Log("Singleton: " + SingletonManager.GetSingleton<TestSingleton>());
     }
 }
