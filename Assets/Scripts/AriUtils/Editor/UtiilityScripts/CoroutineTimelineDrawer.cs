@@ -37,7 +37,7 @@ namespace AriUtils.Editor
             }
 
 
-            // Draw the properties.
+            // Draw the properties by looping through them.
             Rect dropdownRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
             property.isExpanded = EditorGUI.Foldout(dropdownRect, property.isExpanded, label);
             if (property.isExpanded)

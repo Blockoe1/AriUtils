@@ -414,16 +414,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90cdca82b9a3d31449afcbf58bb0db1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InterfaceSerializationTester
-  testReference:
-    _managedReferenceValue: []
-    _objectReferenceValue: {fileID: 0}
-    _referenceType: 0
+  testReference: []
   testDropdown:
     rid: -2
   body: {fileID: 686697060}
   scene:
     _sceneName: SampleScene
     _sceneAsset: {fileID: 102900000, guid: 99c9720ab356a0642a771bea13969a05, type: 3}
+  asyncTimeline:
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    duration: 0
+    useUnscaledTime: 0
+    normalizeCurveTime: 1
+    time: 0
+  coroutineTimeline:
+    curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    duration: 0
+    useUnscaledTime: 0
+    normalizeCurveTime: 1
+    _parentBehavior: {fileID: 686697058}
+    time: 0
   references:
     version: 2
     RefIds:

@@ -15,9 +15,9 @@ namespace AriUtils
     [System.Serializable]
     public class CoroutineTimeline : ITimeline
     {
+        [SerializeField] private AnimationCurve curve;
         [SerializeField] private float duration;
         [SerializeField] private bool useUnscaledTime;
-        [SerializeField] private AnimationCurve curve;
         [SerializeField] private bool normalizeCurveTime = true;
 
         [SerializeField] private MonoBehaviour _parentBehavior;

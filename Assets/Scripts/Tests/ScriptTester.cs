@@ -7,10 +7,12 @@ using System.Collections.Generic;
 public class ScriptTester : MonoBehaviour
 {
     [SerializeField] private SerializedInterface<ITestInterface>[] testReference;
-    [SerializeReference, ClassDropdown] private TestInterfaceClass testDropdown;
+    [SerializeReference, ClassDropdown] private ITestInterface testDropdown;
     [SerializeField, ComponentReference] private Rigidbody2D body;
     [SerializeField] private SceneField scene;
+    [Header("Timelines")]
     [SerializeField] private AsyncTimeline asyncTimeline;
+    [SerializeField] private CoroutineTimeline coroutineTimeline;
 
     [ContextMenu("RealoadScene")]
     public void ReloadScene()
