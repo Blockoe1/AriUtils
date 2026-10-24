@@ -414,7 +414,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90cdca82b9a3d31449afcbf58bb0db1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InterfaceSerializationTester
-  testReference: []
+  testReference:
+    _managedReferenceValue:
+      rid: -2
+    _objectReferenceValue: {fileID: 686697061}
+    _referenceType: 0
   testDropdown:
     rid: -2
   body: {fileID: 686697060}

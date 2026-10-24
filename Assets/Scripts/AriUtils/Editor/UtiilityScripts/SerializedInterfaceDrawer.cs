@@ -82,7 +82,7 @@ namespace AriUtils.Editor
                     return interfaceType.IsAssignableFrom(type) && !EditorUtils.IsClassOrSubclass(type, typeof(UnityEngine.Object));
                 }
 
-                classDropdown = new EditorClassDropdown(ClassFilter, managedReferenceProperty);
+                classDropdown = new EditorClassDropdown(ClassFilter, managedReferenceProperty, interfaceType);
             }
 
             classDropdown.DrawDropdown(fullRect, position, managedReferenceProperty, "");

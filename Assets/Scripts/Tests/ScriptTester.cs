@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Rigidbody2D))]
 public class ScriptTester : MonoBehaviour
 {
-    [SerializeField] private SerializedInterface<ITestInterface>[] testReference;
+    [SerializeField] private SerializedInterface<ITestInterface> testReference;
     [SerializeReference, ClassDropdown] private ITestInterface testDropdown;
     [SerializeField, ComponentReference] private Rigidbody2D body;
     [SerializeField] private SceneField scene;
@@ -22,7 +22,9 @@ public class ScriptTester : MonoBehaviour
 
     private void Start()
     {
-        //testReference.Interface.TestFunction();
+        testReference.Interface.TestFunction();
+        testReference.Interface = new TestInterfaceClass();
+        testReference.Interface.TestFunction();
 
         Debug.Log("Singleton: " + SingletonManager.GetSingleton<TestSingleton>());
     }

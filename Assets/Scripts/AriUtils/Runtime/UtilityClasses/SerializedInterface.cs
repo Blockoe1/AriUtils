@@ -18,18 +18,27 @@ namespace AriUtils
     }
 
     [Serializable]
-    public class SerializedInterface<T> : SerializedInterface where T : class
+    public class SerializedInterface<T> : SerializedInterface, ISerializationCallbackReceiver where T : class
     {
         [SerializeReference] private T _managedReferenceValue;
         [SerializeField] private UnityEngine.Object _objectReferenceValue;
         [SerializeField] private bool _referenceType; // True for managed reference, false for object reference
 
-        public T Interface => _referenceType ? _managedReferenceValue : _objectReferenceValue as T;
+        public T Interface { get; set; }
+
         public override Type InterfaceType => typeof(T);
 
-        public static implicit operator T(SerializedInterface<T> instance)
+        public void OnAfterDeserialize()
         {
-            return instance.Interface;
+            // Stores the interface in a private variable that can be edited at runtime.
+            Interface = _referenceType ? _managedReferenceValue : _objectReferenceValue as T;
+        }
+
+        public void OnBeforeSerialize() { } // Nothing extra here.
+
+        public static implicit operator T(SerializedInterface<T> obj)
+        {
+            return obj.Interface;
         }
     }
 }
