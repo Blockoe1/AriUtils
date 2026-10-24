@@ -12,12 +12,12 @@ using UnityEngine.SceneManagement;
 
 namespace AriUtils
 {
-    public static class BootstrapSceneLoader
+    public static class PersistentDataLoader
     {
-        private const string BOOTSTRAP_SCENE_NAME = "BootstrapScene";
+        private const string BOOTSTRAP_SCENE_NAME = "PersistentData";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static void LoadBootstrapScene()
+        public static void LoadPersistentScene()
         {
             if (CheckIfSceneExists(BOOTSTRAP_SCENE_NAME))
             {
