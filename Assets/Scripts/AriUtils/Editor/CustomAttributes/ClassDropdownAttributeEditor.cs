@@ -4,8 +4,7 @@
 // Creation Date : 12/30/2025
 // Last Modified : 12/30/2025
 //
-// Brief Description : Draws a custom dropdown for an abstract base class and any relevant serialized properties.
-// Based on an article at: https://medium.com/@modyari/unity-workflow-customization-robust-custom-dropdowns-to-unlock-manageable-architecture-f16c183b993a 
+// Brief Description : Attribute for making a sublass based dropdown for a SerializedReference field
 *****************************************************************************/
 using System;
 using UnityEditor;
@@ -30,7 +29,7 @@ namespace AriUtils.Editor
             if (editorDropdown == null)
             {
                 ClassDropdownAttribute dda = (attribute as ClassDropdownAttribute);
-                Type baseType = fieldInfo.FieldType;
+                Type baseType = GetClassType();
                 bool ClassFilter(Type type)
                 {
                     return EditorUtils.IsClassOrSubclass(baseType, type);
@@ -50,7 +49,17 @@ namespace AriUtils.Editor
         /// <returns></returns>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorUtils.GetDynamicPropertyHeight(property);
+            return EditorClassDropdown.GetSubclassPropertyHeight(property);
+        }
+
+        private Type GetClassType()
+        {
+            Type baseType = fieldInfo.FieldType;
+            if (baseType.HasElementType)
+            {
+                baseType = baseType.GetElementType();
+            }
+            return baseType;
         }
     }
 }

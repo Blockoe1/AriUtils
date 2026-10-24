@@ -1,5 +1,5 @@
 /*****************************************************************************
-// File Name : ClassDropdown.cs
+// File Name : EditorClassDropdown.cs
 // Author : Arcadia Koederitz
 // Creation Date : 10/04/2026
 // Last Modified : 10/04/2026
@@ -47,6 +47,37 @@ namespace AriUtils.Editor
             selectionOptions = tempSelections.ToArray();
 
             UpdateSelectionIndex(property);
+        }
+
+
+        /// <summary>
+        /// Searches through an assembly and adds all types that are not filtered out by the class filter.
+        /// </summary>
+        /// <param name="classMatcher"></param>
+        /// <param name="tempSelections"></param>
+        /// <param name="assembly"></param>
+        private void AddTypes(Predicate<Type> classMatcher, ref List<string> tempSelections, Assembly assembly)
+        {
+            foreach (Type type in assembly.GetTypes())
+            {
+                // By default, filter out abstract classes and interfaces (as we cannot make instances of them)
+                if (type.IsInterface || type.IsAbstract || !classMatcher(type))
+                {
+                    continue;
+                }
+
+                // Store the type and the type's name for use in the dropdown.
+                selectionTypes.Add(type);
+                string displayName = type.Name;
+
+                // Attempt to put the type into a given group in the dropdown.
+                if (Attribute.GetCustomAttribute(type, typeof(DropdownGroupAttribute)) is DropdownGroupAttribute dga)
+                {
+                    displayName = dga.GroupName + "/" + displayName;
+                }
+                tempSelections.Add(displayName);
+            }
+
         }
 
         /// <summary>
@@ -99,43 +130,12 @@ namespace AriUtils.Editor
                         yOffset += childHeight + EditorGUIUtility.standardVerticalSpacing;
                     }
 
-                    EditorUtils.LoopForProperties(DrawProperty, property);
+                    LoopForProperties(DrawProperty, property);
 
                     EditorGUI.indentLevel--;
                 }
             }
         }
-
-        /// <summary>
-        /// Searches through an assembly and adds all types that are not filtered out by the class filter.
-        /// </summary>
-        /// <param name="classMatcher"></param>
-        /// <param name="tempSelections"></param>
-        /// <param name="assembly"></param>
-        private void AddTypes(Predicate<Type> classMatcher, ref List<string> tempSelections, Assembly assembly)
-        {
-            foreach (Type type in assembly.GetTypes())
-            {
-                // By default, filter out abstract classes and interfaces (as we cannot make instances of them)
-                if (type.IsInterface || type.IsAbstract || !classMatcher(type))
-                {
-                    continue;
-                }
-
-                // Store the type and the type's name for use in the dropdown.
-                selectionTypes.Add(type);
-                string displayName = type.Name;
-
-                // Attempt to put the type into a given group in the dropdown.
-                if (Attribute.GetCustomAttribute(type, typeof(DropdownGroupAttribute)) is DropdownGroupAttribute dga)
-                {
-                    displayName = dga.GroupName + "/" + displayName;
-                }
-                tempSelections.Add(displayName);
-            }
-
-        }
-
 
         /// <summary>
         /// Updates the index of the selected class to match the one stored in the property.
@@ -180,6 +180,61 @@ namespace AriUtils.Editor
 
             property.serializedObject.ApplyModifiedProperties();
         }
+
+        /// <summary>
+        /// Loops through the child properties in a given SerializedProperty and calls a propertyFunc on 
+        /// copies of the property.
+        /// </summary>
+        /// <param name="propertyFunc">The function to call on copies of the base property's children.</param>
+        /// <param name="baseProperty">The base property to run the function on the children of.</param>
+        private static void LoopForProperties(Action<SerializedProperty> propertyFunc, SerializedProperty baseProperty)
+        {
+            // Copy the property so that the original property iterator is not affected.
+            SerializedProperty copy = baseProperty.Copy();
+            SerializedProperty end = copy.GetEndProperty();
+
+            // Tracks if the loop should enter child properties. Only need to enter children the first loop, as
+            // further children will be drawn automatically.
+            bool enterChildren = true;
+            // Loop over all the properties in the copy until we hit the end property.
+            while (copy.NextVisible(enterChildren) && !SerializedProperty.EqualContents(copy, end))
+            {
+                //Skip the default m_Script property
+                if (copy.name.Equals("m_Script", StringComparison.Ordinal))
+                {
+                    enterChildren = false;
+                    continue;
+                }
+
+                propertyFunc(copy);
+
+                enterChildren = false;
+            }
+        }
+
+        #region Static Utilities
+        /// <summary>
+        /// Specifies the total height taken up by this property.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static float GetSubclassPropertyHeight(SerializedProperty property)
+        {
+            float height = EditorGUIUtility.singleLineHeight;
+
+            // If we have a class selected, then loop through all of it's properties and add their heights to the total.
+            if (property.managedReferenceValue != null && property.isExpanded)
+            {
+                void IncreaseHeight(SerializedProperty ppt)
+                {
+                    height += EditorGUI.GetPropertyHeight(ppt, true) + EditorGUIUtility.standardVerticalSpacing;
+                }
+
+                LoopForProperties(IncreaseHeight, property);
+            }
+            return height;
+        }
+        #endregion
     }
 
 }

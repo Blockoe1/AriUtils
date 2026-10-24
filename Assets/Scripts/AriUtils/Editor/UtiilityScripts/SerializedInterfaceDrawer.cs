@@ -19,14 +19,21 @@ namespace AriUtils.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            //Debug.Log("GUI");
+            SerializedProperty _managedReferenceValue = property.FindPropertyRelative(nameof(_managedReferenceValue));
+
             EditorGUI.BeginProperty(position, label, property);
+            // Prevent serialized interfaces being declared with array types.
+            if (_managedReferenceValue.isArray)
+            {
+                EditorGUI.HelpBox(position, $"Collection types are not supported for direct serialization.  " +
+                    $"Make a collection of SerializedInterfaces instead.", MessageType.Error);
+                return;
+            }
+
+            //Debug.Log("GUI");
             Rect fullRect = position;
             SerializedProperty _referenceType = property.FindPropertyRelative(nameof(_referenceType));
             SerializedProperty _objectReferenceValue = property.FindPropertyRelative(nameof(_objectReferenceValue));
-            SerializedProperty _managedReferenceValue = property.FindPropertyRelative(nameof(_managedReferenceValue));
-
-            SerializedInterface serializedInterface = property.boxedValue as SerializedInterface;
 
             position = EditorGUI.PrefixLabel(position, label);
 
@@ -38,6 +45,7 @@ namespace AriUtils.Editor
 
             position.xMin += typeToggleRect.width + EditorGUIUtility.standardVerticalSpacing;
 
+            SerializedInterface serializedInterface = property.boxedValue as SerializedInterface;
             if (_referenceType.boolValue)
             {
                 // Handle Managed Property type.
@@ -85,10 +93,14 @@ namespace AriUtils.Editor
         {
             SerializedProperty _referenceType = property.FindPropertyRelative(nameof(_referenceType));
             SerializedProperty _managedReferenceValue = property.FindPropertyRelative(nameof(_managedReferenceValue));
-            if (_referenceType.boolValue)
+            if (_managedReferenceValue.isArray)
+            {
+                return base.GetPropertyHeight(property, label) * 2;
+            }
+            else if (_referenceType.boolValue)
             {
                 // If managed reference, then the height should depend on if the property is expanded.
-                return EditorUtils.GetDynamicPropertyHeight(_managedReferenceValue);
+                return EditorClassDropdown.GetSubclassPropertyHeight(_managedReferenceValue);
             }
             else
             {
