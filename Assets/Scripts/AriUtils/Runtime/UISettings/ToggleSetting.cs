@@ -24,6 +24,16 @@ namespace AriUtils.UISettings
             _toggle.SetIsOnWithoutNotify(value);
         }
 
+        // Automatically subscribe/unsubscribe the setting.
+        private void OnEnable()
+        {
+            _toggle.onValueChanged.AddListener(SetSettingValue);
+        }
+        private void OnDisable()
+        {
+            _toggle.onValueChanged.RemoveListener(SetSettingValue);
+        }
+
         public override sealed void SetSettingValue(bool value)
         {
             OnValueChanged(value);

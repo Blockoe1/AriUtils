@@ -10,12 +10,13 @@ using AriUtils.UISettings;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AriUtils.Addons.UISettings
 {
     public abstract class TMP_DropdownSetting : SettingControl<int>
     {
-        [SerializeField] private TMP_Dropdown dropdown;
+        [SerializeField] private TMP_Dropdown _dropdown;
 
         protected abstract int OptionLength { get; }
 
@@ -34,13 +35,24 @@ namespace AriUtils.Addons.UISettings
                 currentValue = -1;
             }
 
-            dropdown.ClearOptions();
+            _dropdown.ClearOptions();
             List<string> options = InitializeOptions(ref currentValue);
-            dropdown.AddOptions(options);
+            _dropdown.AddOptions(options);
 
             SetSettingValue(currentValue);
-            dropdown.SetValueWithoutNotify(currentValue);
-            dropdown.RefreshShownValue();
+            _dropdown.SetValueWithoutNotify(currentValue);
+            _dropdown.RefreshShownValue();
+        }
+
+
+        // Automatically subscribe/unsubscribe the setting.
+        private void OnEnable()
+        {
+            _dropdown.onValueChanged.AddListener(SetSettingValue);
+        }
+        private void OnDisable()
+        {
+            _dropdown.onValueChanged.RemoveListener(SetSettingValue);
         }
 
         protected abstract List<string> InitializeOptions(ref int startingValue);

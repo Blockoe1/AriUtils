@@ -6,9 +6,9 @@
 //
 // Brief Description : Controls a discrete integer/enum setting with a dropdown.
 *****************************************************************************/
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 namespace AriUtils.UISettings
 {
@@ -40,6 +40,17 @@ namespace AriUtils.UISettings
             SetSettingValue(currentValue);
             _dropdown.SetValueWithoutNotify(currentValue);
             _dropdown.RefreshShownValue();
+        }
+
+
+        // Automatically subscribe/unsubscribe the setting.
+        private void OnEnable()
+        {
+            _dropdown.onValueChanged.AddListener(SetSettingValue);
+        }
+        private void OnDisable()
+        {
+            _dropdown.onValueChanged.RemoveListener(SetSettingValue);
         }
 
         protected abstract List<string> InitializeOptions(ref int startingValue);

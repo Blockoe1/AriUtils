@@ -24,6 +24,17 @@ namespace AriUtils.UISettings
             _slider.SetValueWithoutNotify(value);
         }
 
+
+        // Automatically subscribe/unsubscribe the setting.
+        private void OnEnable()
+        {
+            _slider.onValueChanged.AddListener(SetSettingValue);
+        }
+        private void OnDisable()
+        {
+            _slider.onValueChanged.RemoveListener(SetSettingValue);
+        }
+
         public sealed override void SetSettingValue(float value)
         {
             OnValueChanged(value);
