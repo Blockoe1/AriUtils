@@ -13,7 +13,7 @@ namespace AriUtils.UISettings
 {
     public abstract class ToggleSetting : SettingControl<bool>
     {
-        [SerializeField] private Toggle toggle;
+        [SerializeField] protected Toggle _toggle;
 
         private void Awake()
         {
@@ -21,7 +21,7 @@ namespace AriUtils.UISettings
 
             bool value = GetPlayerPrefsBool(PlayerPrefsKey, DefaultValue);
             SetSettingValue(value);
-            toggle.SetIsOnWithoutNotify(value);
+            _toggle.SetIsOnWithoutNotify(value);
         }
 
         public override sealed void SetSettingValue(bool value)

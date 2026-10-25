@@ -14,7 +14,7 @@ namespace AriUtils.UISettings
 {
     public abstract class DropdownSetting : SettingControl<int>
     {
-        [SerializeField] private Dropdown dropdown;
+        [SerializeField] protected Dropdown _dropdown;
 
         protected abstract int OptionLength { get; }
 
@@ -33,13 +33,13 @@ namespace AriUtils.UISettings
                 currentValue = -1;
             }
 
-            dropdown.ClearOptions();
+            _dropdown.ClearOptions();
             List<string> options = InitializeOptions(ref currentValue);
-            dropdown.AddOptions(options);
+            _dropdown.AddOptions(options);
 
             SetSettingValue(currentValue);
-            dropdown.SetValueWithoutNotify(currentValue);
-            dropdown.RefreshShownValue();
+            _dropdown.SetValueWithoutNotify(currentValue);
+            _dropdown.RefreshShownValue();
         }
 
         protected abstract List<string> InitializeOptions(ref int startingValue);

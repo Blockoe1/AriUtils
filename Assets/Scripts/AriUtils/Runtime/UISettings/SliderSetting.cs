@@ -13,7 +13,7 @@ namespace AriUtils.UISettings
 {
     public abstract class SliderSetting : SettingControl<float>
     {
-        [SerializeField] private Slider slider;
+        [SerializeField] protected Slider _slider;
 
         private void Awake()
         {
@@ -21,7 +21,7 @@ namespace AriUtils.UISettings
 
             float value = PlayerPrefs.GetFloat(PlayerPrefsKey, DefaultValue);
             SetSettingValue(value);
-            slider.SetValueWithoutNotify(value);
+            _slider.SetValueWithoutNotify(value);
         }
 
         public sealed override void SetSettingValue(float value)

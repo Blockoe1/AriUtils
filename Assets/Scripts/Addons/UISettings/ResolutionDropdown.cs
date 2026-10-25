@@ -14,18 +14,18 @@ namespace AriUtils.Addons.UISettings
 {
     public class ResolutionDropdown : TMP_DropdownSetting
     {
-        private static Resolution[] resolutions;
+        private static Resolution[] _resolutions;
         private static Resolution[] Resolutions
         {
             get
             {
-                if (resolutions == null)
+                if (_resolutions == null)
                 {
-                    resolutions = Screen.resolutions;
+                    _resolutions = Screen.resolutions;
 
                     // Filter out duplicates
                     List<Resolution> resList = new();
-                    foreach(Resolution res in resolutions)
+                    foreach(Resolution res in _resolutions)
                     {
                         // Compre res to all the resolutions already in the res list.  If none match, then add it.
                         if (!resList.Any(x => CompareResolutions(x, res)))
@@ -33,9 +33,9 @@ namespace AriUtils.Addons.UISettings
                             resList.Add(res);
                         }
                     }
-                    resolutions = resList.ToArray();
+                    _resolutions = resList.ToArray();
                 }
-                return resolutions;
+                return _resolutions;
             }
         }
 
