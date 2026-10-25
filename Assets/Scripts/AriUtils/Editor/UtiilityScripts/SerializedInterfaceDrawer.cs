@@ -85,7 +85,7 @@ namespace AriUtils.Editor
                 classDropdown = new EditorClassDropdown(ClassFilter, managedReferenceProperty, interfaceType);
             }
 
-            classDropdown.DrawDropdown(fullRect, position, managedReferenceProperty, "");
+            classDropdown.DrawDropdown(fullRect, position, managedReferenceProperty, null);
         }
         #endregion
 
