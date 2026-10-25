@@ -7,11 +7,23 @@
 // Brief Description : Controls a discrete integer/enum setting with a dropdown.
 *****************************************************************************/
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AriUtils.UISettings
 {
-    public abstract class DropdownSetting : SettingControl
+    public abstract class DropdownSetting : SettingControl<int>
     {
-       
+        [SerializeField] private Dropdown dropdown;
+
+        private void Awake()
+        {
+            Initialize();
+        }
+
+        public sealed override void SetSettingValue(int value)
+        {
+            OnValueChanged(value);
+            PlayerPrefs.SetInt(PlayerPrefsKey, value);
+        }
     }
 }

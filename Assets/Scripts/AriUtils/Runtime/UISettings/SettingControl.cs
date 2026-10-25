@@ -10,9 +10,13 @@ using UnityEngine;
 
 namespace AriUtils.UISettings
 {
-    public abstract class SettingControl : MonoBehaviour
+    public abstract class SettingControl<T> : MonoBehaviour
     {
         protected abstract string PlayerPrefsKey { get; }
+        protected abstract T DefaultValue { get; }
         protected virtual void Initialize() { }
+
+        public abstract void SetSettingValue(T value);
+        protected abstract void OnValueChanged(T value);
     }
 }
