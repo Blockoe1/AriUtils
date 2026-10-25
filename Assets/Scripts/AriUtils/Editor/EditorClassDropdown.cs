@@ -19,13 +19,13 @@ namespace AriUtils.Editor
     public class EditorClassDropdown
     {
         private int selectionIndex;
-        private readonly string[] selectionOptions;
+        private readonly GUIContent[] selectionOptions;
         private readonly List<Type> selectionTypes;
 
         public EditorClassDropdown(Predicate<Type> classMatcher, SerializedProperty property, Type assemblyRestrictionType = null)
         {
             // Create a temp list to add selection options to.
-            List<string> tempSelections = new List<string>() { "Null" };
+            List<GUIContent> tempSelections = new List<GUIContent>() { new GUIContent("Null") };
 
             selectionTypes = new List<Type>();
 
@@ -56,7 +56,7 @@ namespace AriUtils.Editor
         /// <param name="classMatcher"></param>
         /// <param name="tempSelections"></param>
         /// <param name="assembly"></param>
-        private void AddTypes(Predicate<Type> classMatcher, ref List<string> tempSelections, Assembly assembly)
+        private void AddTypes(Predicate<Type> classMatcher, ref List<GUIContent> tempSelections, Assembly assembly)
         {
             foreach (Type type in assembly.GetTypes())
             {
@@ -75,7 +75,7 @@ namespace AriUtils.Editor
                 {
                     displayName = dga.GroupName + "/" + displayName;
                 }
-                tempSelections.Add(displayName);
+                tempSelections.Add(new GUIContent(displayName));
             }
 
         }
@@ -86,7 +86,7 @@ namespace AriUtils.Editor
         /// <param name="position"></param>
         /// <param name="property"></param>
         /// <param name="label"></param>
-        public void DrawDropdown(Rect fullRect, Rect position, SerializedProperty property, string label)
+        public void DrawDropdown(Rect fullRect, Rect position, SerializedProperty property, GUIContent label)
         {
             UpdateSelectionIndex(property);
 

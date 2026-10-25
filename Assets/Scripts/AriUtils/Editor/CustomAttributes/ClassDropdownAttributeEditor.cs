@@ -38,7 +38,7 @@ namespace AriUtils.Editor
                 editorDropdown = new EditorClassDropdown(ClassFilter, property, dda.RestrictAssemblies ? baseType : null);
            }
 
-            editorDropdown.DrawDropdown(position, position, property, property.displayName);
+            editorDropdown.DrawDropdown(position, position, property, label);
         }
 
         /// <summary>

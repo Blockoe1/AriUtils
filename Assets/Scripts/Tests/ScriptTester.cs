@@ -2,6 +2,7 @@ using AriUtils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class ScriptTester : MonoBehaviour
