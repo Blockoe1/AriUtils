@@ -1,0 +1,18 @@
+/*****************************************************************************
+// File Name : SettingControl.cs
+// Author : Arcadia Koederitz
+// Creation Date : 10/24/2026
+// Last Modified : 10/24/2026
+//
+// Brief Description : Generic class that serves as the base for all UI Setting controls.
+*****************************************************************************/
+using UnityEngine;
+
+namespace AriUtils.UISettings
+{
+    public abstract class SettingControl : MonoBehaviour
+    {
+        protected abstract string PlayerPrefsKey { get; }
+        protected virtual void Initialize() { }
+    }
+}
