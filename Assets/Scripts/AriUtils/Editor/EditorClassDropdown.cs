@@ -37,7 +37,11 @@ namespace AriUtils.Editor
             else
             {
                 // Loop through all types in all assemblies (More generic impmenentation).
+#if UNITY_6000_6_OR_NEWER
                 foreach (Assembly asmb in CurrentAssemblies.GetLoadedAssemblies())
+#else
+                foreach (Assembly asmb in AppDomain.CurrentDomain.GetAssemblies())
+#endif
                 {
                     AddTypes(classMatcher, ref tempSelections, asmb);
                 }

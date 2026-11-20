@@ -90,6 +90,29 @@ namespace AriUtils
                 Debug.Log($"Collection {collectionName} contains item {array[i]} at index {i}.");
             }
         }
+
+        /// <summary>
+        /// Removes all objects that are duplicates determined by a comparator func.
+        /// </summary>
+        /// <typeparam name="T">The type of element stored in the collection.</typeparam>
+        /// <typeparam name="C">The type of the collection itself.</typeparam>
+        /// <param name="collection">The collection to remove duplicates from.</param>
+        /// <param name="comparator">The comparator function to determine which elements are duplicates.</param>
+        /// <returns>A new copy of the collection with duplicates removed.</returns>
+        public static List<T> RemoveDuplicates<T>(List<T> collection, Func<T, T, bool> comparator)
+        {
+            List<T> removedDupes = new();
+            removedDupes.AddRange(collection);
+            for (int i = removedDupes.Count - 1; i >= 0; i--)
+            {
+                // FindIndex starts from the front of the list, so it will find a different index if one exists.
+                if (removedDupes.FindIndex(x => comparator(x, removedDupes[i])) != i)
+                {
+                    removedDupes.RemoveAt(i);
+                }
+            }
+            return removedDupes;
+        }
     }
 
 }
